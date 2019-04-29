@@ -1,0 +1,65 @@
+$(function () {
+  $("#get_tags").autocomplete({
+        source: all_tags,
+        select: function (event, ui) { 
+          console.log(ui.item);
+          //alert(ui.item.id); 
+          var selected_tag = ui.item.value;
+          var selected_tag_id = ui.item.id;
+          
+          $(".my_tags").append('<input type="hidden" class="input_'+selected_tag+'" name="tags[]" value="'+selected_tag_id+'">');
+          $(".my_tags").append('<div class="one_tg_'+selected_tag+'">#'+selected_tag+' <a href="javascript:void(0);" class="cmn_tag" rel="'+selected_tag+'">x</a> </div> ');
+          setTimeout(function(){
+            $("#get_tags").val('');
+          })
+          
+        }
+  });
+
+})
+$(document).ready(function(){
+    $('#editor-dropdown').summernote({
+
+        placeholder: 'Enter Description',
+        tabsize: 2,
+        height: 200
+    
+    });
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+   
+    $(document).on('click', '.custom_submit', function(){
+      var temp_tag = $.trim($('#get_tags').val());
+      if(temp_tag != ''){
+           $('.original_tag').val('1');
+      }
+      var auto_tag = $('.my_tags').find('.cmn_tag').length;
+      if(auto_tag > 0){
+             $('.original_tag').val('1');
+       }
+   })
+   $(document).on('click','.cmn_tag', function(){
+      var tg_name = $.trim($(this).attr('rel'));
+      $('.input_'+tg_name).remove();
+      $('.one_tg_'+tg_name).remove();
+
+  })
+  
+  /*********************create poll*************************/
+  $('#create_poll').validate();
+  $(document).on('click','.add_more_option', function(){
+      
+      $('.main_options').append('<input type="text" class="form-control form-control-sm custom_optoin" id="colFormLabelSm" placeholder="Option (maximum 40 characters)" name="option[]" maxlength="40">');
+	  var option_count = $('.custom_optoin').length;
+	  if(option_count >= 4 ){
+		  $(this).hide();
+	  }
+	  //alert(option_count)
+
+  })
+  /*********************end create poll*************************/
+  
+})

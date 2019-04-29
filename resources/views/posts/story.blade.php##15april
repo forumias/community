@@ -1,0 +1,164 @@
+@extends('layouts.front_layout')
+
+@section('content')
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font: 16px Arial;  
+}
+
+/*the container must be positioned relative:*/
+.autocomplete {
+  position: relative;
+  display: inline-block;
+}
+
+input {
+  border: 1px solid transparent;
+  background-color: #f1f1f1;
+  padding: 10px;
+  font-size: 16px;
+}
+
+input[type=text] {
+  background-color: #f1f1f1;
+  width: 100%;
+}
+
+input[type=submit] {
+  background-color: DodgerBlue;
+  color: #fff;
+  cursor: pointer;
+}
+
+.autocomplete-items {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  /*position the autocomplete items to be the same width as the container:*/
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+
+.autocomplete-items div {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff; 
+  border-bottom: 1px solid #d4d4d4; 
+}
+
+/*when hovering an item:*/
+.autocomplete-items div:hover {
+  background-color: #e9e9e9; 
+}
+
+/*when navigating through the items using the arrow keys:*/
+.autocomplete-active {
+  background-color: DodgerBlue !important; 
+  color: #ffffff; 
+}
+</style>
+ <!-- Min Container area -->
+ <section class="min_container min_pages">
+        <div class="section_row">
+            <div class="create_layout" > 
+            
+                       <!-- Add post poup area --> 
+                      <?php /* @include('../Elements/flash-message') */?>
+						<div class="add_post modal1">
+							<h2>Create New Story</h2> 
+							<form class="input_group" method="post" action="{{URL::to('/story')}}" enctype="multipart/form-data"> 
+                            @csrf
+                                <input type="hidden" name="type" value="2">
+								<div class="input-field">
+									<input  type="text" class="validate" placeholder="Story title" name="title"> 
+                                    <span class="invalid-feedback"> @if ($errors->has('title'))
+                                        <strong>{{ $errors->first('title') }}</strong> 
+                                        @endif
+                                    </span>
+									<textarea id="editor-dropdown" placeholder="Tell your story..." name="description"></textarea>
+
+                                    <span class="invalid-feedback"> @if ($errors->has('description'))
+                                        <strong>{{ $errors->first('description') }}</strong> 
+                                        @endif
+                                    </span>
+								</div> 
+                <div class="upload_photo row"> 
+									<ul class="tabs tab_nav">
+										<li class="tab col s6"><a href="#photo"><i class="ion-ios-camera"></i>Add Photo</a></li>
+									</ul> 
+									<div id="photo" class="col s12 tabs_content">
+										<input type="file" name="file_upload" accept="image/*">
+                    <span class="invalid-feedback"> @if ($errors->has('file_upload'))
+                          <strong>{{ $errors->first('file_upload') }}</strong> 
+                          @endif
+                      </span>
+									</div>
+								</div>
+								<?php /*<div class="upload_photo row"> 
+									<ul class="tabs tab_nav">
+										<li class="tab col s6"><a href="#photo"><i class="ion-ios-camera"></i>Add Photo</a></li>
+                                        <li class="tab col s6"><a class="" href="#video"><i class="ion-ios-videocam"></i>Add video</a></li> 
+									</ul> 
+									<div id="photo" class="col s12 tabs_content">
+										<div class="photo_u">
+											<img src="downloads/openlist-html/all-template/images/upload.png" alt="">
+											<h4>Select files to upload <small>or drag & drop files</small></h4>
+										</div>
+									</div>
+									<div id="video" class="col s12 tabs_content"> 
+										<div class="photo_u">
+											<img src="downloads/openlist-html/all-template/images/upload.png" alt="">
+											<h4>Select files to upload <small>or drag & drop files</small></h4>
+										</div>
+									</div> 
+								</div> */?>
+                <input type="hidden" name="tag_name" class="original_tag">
+								<div class="input-field col s12 select_option">
+									<div class="autocomplete" data-index="0" data-initialized="true">
+										<input class="input" id="get_tags" placeholder="Enter a tag" name="temp_tag">
+                      <span class="invalid-feedback"> @if ($errors->has('tag_name'))
+                          <strong>{{ $errors->first('tag_name') }}</strong> 
+                          @endif
+                      </span>
+									</div> 
+                                    <div class="my_tags">
+                                        
+                                    </div>
+								</div> 
+								<?php /*<div class="input-field add_link">
+									<input  type="text" class="validate" placeholder="Add a link">
+									<span>optional</span>
+								</div>
+								<div class="yes_no">
+									<h4>Anyone can submit?</h4>
+									<div class="flipswitch"></div>
+								</div>*/?>
+								<div class="row submit_btn_area"> 
+								   <?php /*<div class="col s6"> 
+										<button class="waves-effect"><i class="ion-folder"></i>Save draft</button>
+								   </div>
+								   <div class="col s6"> 
+										<button class="waves-effect col s6"><i class="ion-eye"></i>Preview post</button>
+								   </div>*/?>
+								   <div class="col s12"> 
+										<button class="waves-effect publish custom_submit">Publish</button>
+								   </div>
+								</div>
+							</form> 
+						</div>
+    <!-- End Add post poup area -->
+                  
+            </div>
+            
+        </div>
+    </section>
+    <!-- End Min Container area -->
+    @endsection
