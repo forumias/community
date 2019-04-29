@@ -15,7 +15,21 @@
    /******************Scroll pagination***********************/
 	 $(window).on("scroll", function() {
            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-               alert('ok');
+			   var flag = 1;
+               $j.ajax({
+				url:base_url+'/get_post',
+				type:'get',
+				beforeSend:function(){
+					
+					$this.children('.like_count').text(like_count);
+					
+				},
+				data:{flag:flag},
+				success:function(resp){
+					//alert(resp)
+					
+				}
+			})
            }
        });
 	 /******************end Scroll pagination***********************/
