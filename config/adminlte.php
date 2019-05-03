@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 2',
+    'title' => 'ForumIAS',
 
     'title_prefix' => '',
 
@@ -115,8 +115,8 @@ return [
             'can'  => 'manage-blog',
         ],
         [
-            'text'        => 'Hashtags',
-            'url'         => 'admin/hashtags',
+            'text'        => 'Groups',
+            'url'         => 'admin/groups',
             'icon'        => 'tags',
            
         ],
@@ -128,7 +128,7 @@ return [
         ],
         [
             'text'        => 'Posts',
-            'url'         => '#',
+            'url'         => 'admin/posts',
             'icon'        => 'file',
            
         ],

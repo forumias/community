@@ -56,7 +56,7 @@
                                                         <a href="#" class="profile-pic author-pic drop-theme-arrows drop-target"><img data-sizes="auto" src="{{$post_detail->userInfo->image}}" data-width="100" data-height="100" alt="Ali Tabrizi's photo" class="lazyautosizes lazyloaded" sizes="40px" style="height:40px; width:40px;"></a>
 
                                                         <p class="author-name">
-                                                            <a href="#">
+                                                            <a href="{{ URL::to('/detail/'.base64_encode(convert_uuencode($post_detail->userInfo->id))) }}">
 
                                                                 <span itemprop="name">{{$post_detail->userInfo->full_name}}
 </span></a>
@@ -109,9 +109,11 @@
 													@endforeach
                                                     
                                                 </div>
-
+												@if($post_detail->img != '')
+											
                                                 <div class="featured-cover-image" style="background-image: url(&quot;{{ asset('public/images/posts/original/'.$post_detail->img) }}&quot;);">
                                                 </div>
+												@endif
                                             </div>
                                         </div>
                                         <meta itemprop="headline" content="Save your phone’s battery by being notified whenever it’s full">
@@ -317,7 +319,7 @@
                                             </div> */?>
 										@if(@$auth_user)
                                             <div class="dropdown">
-                                                <button class="hn-flat-btn d-flex align-items-center" data-toggle="dropdown" aria-expanded="false">
+                                                <button class="hn-flat-btn d-flex align-items-center show_op_btn" data-postid="{{$post_detail->id}}" data-toggle="dropdown" aria-expanded="false">
                                                     <svg viewBox="0 0 24 24">
 
                                                         <path fill="none" d="M0 0h24v24H0V0z"></path>
@@ -350,7 +352,7 @@
 </span></a>
 													@endif
 													
-                                                    <a class="dropdown-item d-flex align-items-center" href="#">
+                                                    <a class="dropdown-item d-flex align-items-center" href="#" data-toggle="modal" data-target="#reportModal">
                                                         <svg viewBox="0 0 24 24">
 
                                                             <path fill="none" d="M0 0h24v24H0V0z"></path>
@@ -361,7 +363,7 @@
                                                             <path d="M11 7h2v7h-2z"></path>
                                                         </svg>
 
-                                                        <span>Report
+                                                        <span class="cmn_report" data-postid="{{$post_detail->id}}">Report
 </span></a>
 													
                                                 </div>
@@ -382,7 +384,7 @@
                         <div class="pub-about-me d-flex flex-row flex-wrap">
 
                             <div class="profile-image">
-                                <a href="#" class="profile-pic author-pic drop-theme-arrows drop-target"><img data-sizes="auto" src="{{$post_detail->userInfo->image}}" data-src="{{$post_detail->userInfo->image}}" data-width="360" data-height="360" alt="{{$post_detail->userInfo->full_name}}'s photo" class="lazyautosizes lazyloaded" sizes="120px" style="height: 100px;width:120px;"></a>
+                                <a href="#" class="profile-pic author-pic drop-theme-arrows drop-target"><img data-sizes="auto" src="{{$post_detail->userInfo->image}}" data-src="{{$post_detail->userInfo->image}}" data-width="360" data-height="360" alt="{{$post_detail->userInfo->full_name}}'s photo" class="lazyautosizes lazyloaded img-responsive" sizes="120px"></a>
                             </div>
 
                             <div class="content">
@@ -1052,6 +1054,8 @@
     </div>
 </div>
 @include('../Elements/pop-ups')
+@include('../Elements/posts/report_popup')
+
 @if($auth_user)
 	@include('../Elements/posts/comment_element')
 	@include('../Elements/posts/sub_comment_element')

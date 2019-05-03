@@ -19,9 +19,9 @@ class HomeController extends Controller
 	public function verify()
 	{
 		$user = auth()->user();	
-		//echo '#####<pre>';print_r($user->);die;
+		//echo '#####<pre>';print_r($user);die;
 		if($user->type == 1){
-			return redirect('/admin/home');
+			return redirect('/admin/dashboard');
 		}else{
 			return redirect('/');
 		}
@@ -35,6 +35,7 @@ class HomeController extends Controller
      */
     public function index()
     {
+		echo 'rrrr444444444444';die;
         return view('home');
     }
 }

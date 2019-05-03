@@ -1,5 +1,5 @@
 <div style="display:none;">
-<form action="http://139.59.79.193/community/admin/login" method="post" id="myForm">
+<form action="{{ URL::to('/admin/login') }}" method="post" id="myForm">
                @csrf
 
                 <div class="form-group has-feedback ">

@@ -18,7 +18,7 @@
         Tags listing
         
       </h1>
-      <div class="addbtn"><a class="btn btn-block btn-success" href="{{ route('hashtags.create') }}">Add Tag</a></div>
+      <div class="addbtn"><a class="btn btn-block btn-success" href="{{ route('groups.create') }}">Add Group</a></div>
     </section>
 
     <!-- Main content -->
@@ -34,7 +34,7 @@
               <table id="example2" class="table table-bordered table-hover">
                 <thead>
                 <tr>
-                  <th>Tag Name</th>
+                  <th>Group Name</th>
                   <th>Description</th>
                   <th>Action</th>
                   
@@ -47,12 +47,12 @@
                   <td>{{$tag->description}}
                   </td>
                   <td>
-                  <form action="{{ route('hashtags.destroy',$tag->id) }}" method="POST">
+                  <form action="{{ route('groups.destroy',$tag->id) }}" method="POST">
                          @csrf
 													@method('DELETE')
-                      <a href="{{ route('hashtags.edit',$tag->id) }}"><i class="fa fa-fw fa-edit"></i></a>|
+                      <a href="{{ route('groups.edit',$tag->id) }}"><i class="fa fa-fw fa-edit"></i></a>|
                     
-                        <button type="submit"   href="javascript:void(0);" onclick="return confirm('Are you sure you want to delete this tag?');" style="background:none;border:none;">
+                        <button type="submit"   href="javascript:void(0);" onclick="return confirm('Are you sure you want to delete this group?');" style="background:none;border:none;">
                         <i class="fa fa-fw fa-remove"></i>
                         </button>
 

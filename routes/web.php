@@ -14,17 +14,17 @@
 /*Route::get('/', function () {
     return view('welcome');
 });*/
-Route::get('/', 'PostsController@dashboard')->name('dashboard');
-Route::get('/questions', 'PostsController@questions')->name('questions');
-Route::get('/polls', 'PostsController@polls')->name('polls');
-Route::get('/news', 'PostsController@news')->name('news');
-Route::get('/askQuestion', 'PostsController@ask_qus')->name('askQuestion');
+Route::get('/', 'PostsController@dashboard')->name('dashboard')->middleware('frontuser');
+Route::get('/featured', 'PostsController@featured')->name('featured')->middleware('frontuser');
+Route::get('/latest', 'PostsController@latest')->name('latest')->middleware('frontuser');
+Route::get('/news', 'PostsController@news')->name('news')->middleware('frontuser');
+Route::get('/askQuestion', 'PostsController@ask_qus')->name('askQuestion')->middleware('frontuser');
 Route::post('/askQuestion', 'PostsController@ask_qus')->name('askQuestion');
-Route::get('/story', 'PostsController@user_story')->name('story');
+Route::get('/story', 'PostsController@user_story')->name('story')->middleware('frontuser');
 Route::post('/story', 'PostsController@user_story')->name('story');
-Route::get('/createPoll', 'PostsController@create_poll')->name('createPoll');
+Route::get('/createPoll', 'PostsController@create_poll')->name('createPoll')->middleware('frontuser');
 Route::post('/createPoll', 'PostsController@create_poll')->name('createPoll');
-Route::get('/createNews', 'PostsController@create_news')->name('createNews');
+Route::get('/createNews', 'PostsController@create_news')->name('createNews')->middleware('frontuser');
 Route::post('/createNews', 'PostsController@create_news')->name('createNews');
 Route::post('/editor_img', 'PostsController@editor_img')->name('editor_img');
 Route::get('/get_tags', 'PostsController@get_tags')->name('get_tags');
@@ -33,18 +33,21 @@ Route::get('/delete_action', 'PostsController@delete_action')->name('delete_acti
 Route::post('/like_unlike', 'PostsController@like_unlike')->name('like_unlike');
 Route::post('/user_likes', 'PostsController@user_likes')->name('user_likes');
 Route::get('/get_post', 'PostsController@get_post')->name('get_post');
+Route::post('/report_post', 'PostsController@report_post')->name('report_post');
 // UsersController
 Route::get('/auth_user', 'UsersController@index')->name('auth_user');
 Route::get('/checklogout', 'UsersController@checklogout')->name('checklogout');
 Route::get('/check_log', 'UsersController@check_log')->name('check_log');
-Route::get('/users', 'UsersController@user_listing')->name('users');
-Route::get('/detail/{id}', 'UsersController@detail')->name('detail');
+Route::get('/users', 'UsersController@user_listing')->name('users')->middleware('frontuser');
+Route::get('/detail/{id}', 'UsersController@detail')->name('detail')->middleware('frontuser');
 //-----------------------
 Route::get('/home/verify', 'HomeController@verify')->name('verify');
-Route::get('/tags', 'TagsController@tags')->name('tags');
+Route::get('/groups', 'GroupsController@groups')->name('groups')->middleware('frontuser');
 Route::post('/follow_unfollow_tag', 'FollowsController@follow_unfollow_tag')->name('follow_unfollow_tag');
 Route::get('post/detail/{id}', 'PostsController@detail');
 Route::get('/test', 'Auth\LoginController@test')->name('test');
+//TagsController-----------------------------
+Route::get('/tag/{slag}', 'GroupsController@dashboard')->name('tag_dashboard')->middleware('frontuser');
 
 
 //Auth::routes();
@@ -53,6 +56,8 @@ Route::get('/test', 'Auth\LoginController@test')->name('test');
 
 
 //Auth::routes();
+Route::get('/admin', function(){
+})->middleware('auth', 'admin');
 Route::get('/admin', 'Auth\LoginController@showLoginForm')->name('login');
 Route::prefix('admin')->group(function () {
     // front routes
@@ -75,15 +80,16 @@ Route::prefix('admin')->group(function () {
     Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 
 
-    Route::get('/home', 'HomeController@index')->name('home');
-    Route::resource('hashtags','TagsController');
-    Route::resource('posts','PostsController');
-    Route::resource('categories','CategoryController');
+    Route::get('dashboard', 'AdminController@dashboard')->name('dashboard')->middleware('auth', 'adminuser');
+    //Route::get('acheck', 'AdminController@acheck')->name('acheck');
+    Route::resource('groups','GroupsController')->middleware('auth','adminuser');
+    Route::resource('posts','PostsController')->middleware('auth','adminuser');
+    Route::resource('categories','CategoryController')->middleware('auth','adminuser');
 
 
 
 });
 
-Auth::routes();
+//Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+//Route::get('/home', 'HomeController@index')->name('home');

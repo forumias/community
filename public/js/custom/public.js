@@ -15,21 +15,34 @@
    /******************Scroll pagination***********************/
 	 $(window).on("scroll", function() {
            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-			   var flag = 1;
-               $j.ajax({
-				url:base_url+'/get_post',
-				type:'get',
-				beforeSend:function(){
-					
-					$this.children('.like_count').text(like_count);
-					
-				},
-				data:{flag:flag},
-				success:function(resp){
-					//alert(resp)
-					
-				}
-			})
+			   var empty_page = $('.hn-post-card').length;
+			   if(empty_page > 1){
+					   var flag = 1;
+					   var page = $.trim($('.main_append').data('page'));
+					   var acttype = $.trim($('.main_append').data('acttype'));
+					   $('.feed_loader').show();
+					   $j.ajax({
+						url:base_url+'/get_post',
+						type:'get',
+						beforeSend:function(){
+							
+						},
+						data:{flag:flag, page:page, acttype:acttype},
+						success:function(resp){
+							//alert(resp)
+							if(resp == ''){
+								$('.feed_loader').html('No result found.');
+							}else if(resp != 'error'){
+								$('.feed_loader').hide();
+								page = parseInt(page) + 1;
+								$('.main_append').data('page', page);
+								$('.main_append').append(resp);
+							}
+						}
+					})
+			   }else{
+				   $('.feed_loader').hide();
+			   }
            }
        });
 	 /******************end Scroll pagination***********************/
@@ -150,9 +163,35 @@
                  
              }
          })
-     })
-	 
-	
+     })//
+	 // report acript 
+	 $j('#savereport').validate();
+	 $(document).on('click', '.show_op_btn', function(){
+		var post_id = $.trim($(this).data('postid'));
+		$('#reportModal').find('.post_id').val(post_id);;
+	})
+	$(document).on('click', '.cmn_report', function(){
+		var user_id = check_app; 
+		if(user_id != ''){
+			var post_id = $.trim($(this).data('postid'));
+			$('#reportModal').find('.post_id').val(post_id);;
+		}else{
+			window.location.href = login_uri;
+		}
+	})
+	$(document).on('click', '.cmn_report_inp', function(){
+		var report_option = $.trim($(this).val());
+		if(report_option == 5){
+			$('#reportModal').find('.report_desc').addClass('required');
+			$('#reportModal').find('.report_desc').prop("disabled", false);
+			$('#reportModal').find('#other-textfield-error').show();
+			
+		}else{
+			$('#reportModal').find('.report_desc').prop("disabled", true);
+			$('#reportModal').find('.report_desc').val('');
+			$('#reportModal').find('#other-textfield-error').hide();
+		}
+	})
  })
  
  

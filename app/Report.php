@@ -6,7 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Post extends Authenticatable
+class Report extends Authenticatable
 {
     use Notifiable;
 
@@ -16,20 +16,17 @@ class Post extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'user_id','category_id','tag_id','tag_name', 'type', 'title','slug', 'img','description','status','featured', 'created_at',
+        'post_id','user_id','reason','description','created_at',
     ];
 
     public function userInfo()
     {
         return $this->belongsTo('App\User', 'user_id');
     }
-    public function commentInfo()
-    {
-        return $this->hasMany('App\Comment', 'post_id', 'id' );
-    }
+   
     public function likeInfo()
     {
-        return $this->belongsTo('App\Like', 'id', 'post_id' );
+        return $this->belongsTo('App\Like', 'post_id', 'post_id' );
     }
 
 }

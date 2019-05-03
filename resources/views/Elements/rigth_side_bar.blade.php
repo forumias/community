@@ -41,7 +41,7 @@
 @foreach($users_tofollow as $one_to_follow)
 	<div class="profile-unit d-flex flex-row">
 
-	<div><a href="{{ URL::to('/detail/'.base64_encode(convert_uuencode($one_to_follow->id))) }}" class="profile-pic user-photo drop-theme-arrows drop-target"><img data-sizes="auto" src="{{$one_to_follow->image}}" data-src="{{$one_to_follow->image}}" data-width="240" data-height="240" alt="Syed Fazle Rahman's photo" class="lazyautosizes lazyloaded" sizes="52px"></a>
+	<div><a href="{{ URL::to('/detail/'.base64_encode(convert_uuencode($one_to_follow->id))) }}" class="profile-pic user-photo drop-theme-arrows drop-target"><img data-sizes="auto" src="{{$one_to_follow->image}}" data-src="{{$one_to_follow->image}}" data-width="240" data-height="240" alt="Syed Fazle Rahman's photo" class="lazyautosizes lazyloaded" sizes="52px" height="40"></a>
 	</div>
 
 	<div class="user-meta"><h3><a href="{{ URL::to('/detail/'.base64_encode(convert_uuencode($one_to_follow->id))) }}">{{$one_to_follow->full_name}}</a></h3>

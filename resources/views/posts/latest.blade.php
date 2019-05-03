@@ -28,7 +28,7 @@
 
 <div class="feed-component">
 
-<main class="feed-items-wrap main_append" itemprop="mainEntityOfPage" data-page="1" data-acttype="1">
+<main class="feed-items-wrap main_append" itemprop="mainEntityOfPage" data-page="1" data-acttype="3">
 
 
 
@@ -39,11 +39,12 @@
 <ul class="nav nav-pills">
 		
 <li class="nav-item">
-		<a class="nav-link active" href="{{ URL::to('/') }}">My space</a></li>
+		<a class="nav-link" href="{{ URL::to('/') }}">My space</a></li>
 		
-<li class="nav-item"><a class="nav-link " href="{{ URL::to('/featured') }}">Featured</a></li>
+<li class="nav-item"><a class="nav-link" href="{{ URL::to('/featured') }}">Featured</a></li>
 		
-<li class="nav-item"><a class="nav-link " href="{{ URL::to('/latest') }}">Latest</a></li>
+<li class="nav-item"><a class="nav-link active" href="{{ URL::to('/latest') }}">Latest</a></li>
+
 	
 </ul>
 
@@ -172,7 +173,7 @@ if($sinceThen->y > 0){
 <?php
 $full_story = strip_tags($story->description);
 if(strlen($full_story) > 250){
-	$sub_string = substr($full_story,0, 250).'...';
+	$sub_string = substr($full_story,0, 250);
 }else{
 	$sub_string = $story->description;
 }

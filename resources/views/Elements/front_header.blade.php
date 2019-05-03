@@ -97,8 +97,8 @@
 
 <div>
 
-<span>Write Story
-</span><small>Write an article on something you learned today or your experience with a technology</small>
+<span>Write an Article
+</span><small>Write an article on something you learned today or your experience with</small>
 </div></a><a class="dropdown-item d-flex flex-row align-items-center" href="{{ URL::to('/askQuestion') }}">
 
 <div><svg viewBox="0 0 500 500"><g transform="translate(1 9)" fill-rule="nonzero" fill="none"><ellipse fill="#FFAB00" cx="242.088364" cy="241.5" rx="241.454545" ry="241.5"></ellipse>
@@ -111,8 +111,9 @@
 <div>
 
 <span>Ask Question
-</span><small>Start a discussion, ask a question, or ask for an opinion on a particular technology</small>
-</div></a><a class="dropdown-item d-flex flex-row align-items-center" href="{{ URL::to('/createPoll') }}">
+</span><small>Start a discussion, ask a question, or ask for an opinion</small>
+</div></a>
+<?php /*<a class="dropdown-item d-flex flex-row align-items-center" href="{{ URL::to('/createPoll') }}">
 
 <div><svg viewBox="0 0 24 24"><g fill="none" fill-rule="evenodd">
 
@@ -129,7 +130,8 @@
 
 <span>Start Poll
 </span><small>Confused with something? Ask the community for their opinion</small>
-</div></a><a class="dropdown-item d-flex flex-row align-items-center" href="{{ URL::to('/createNews') }}">
+</div></a>*/?>
+<a class="dropdown-item d-flex flex-row align-items-center" href="{{ URL::to('/createNews') }}">
 
 <div><svg viewBox="0 0 24 24"><g fill="none" fill-rule="evenodd">
 
@@ -146,8 +148,8 @@
 
 <div>
 
-<span>Submit News
-</span><small>Found an interesting article on the web? Share it with the community.</small>
+<span>Share Gyan
+</span><small>Write an Article and share your knowledge or something you have learned recently.</small>
 </div></a>
 </div>
 

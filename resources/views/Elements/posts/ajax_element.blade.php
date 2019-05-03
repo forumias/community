@@ -116,14 +116,14 @@
 
                     <div class="post-card-brief">
                         <?php
-                        $full_story = $story->description;
-                        if(strlen($full_story) > 120){
-                            $sub_string = substr($full_story,0, 120);
+                        $full_story = strip_tags($story->description);
+                        if(strlen($full_story) > 250){
+                            $sub_string = substr($full_story,0, 250);
                         }else{
                             $sub_string = $story->description;
                         }
                         ?>
-                            <p><a href="{{ URL::to('/post/detail/'.base64_encode(convert_uuencode($story->id))) }}"><?php echo nl2br($story->description);?></a></p>
+                            <p><a href="{{ URL::to('/post/detail/'.base64_encode(convert_uuencode($story->id))) }}"><?php echo $sub_string;?></a></p>
                     </div>
                 </div>
                 @if($story->img != '')
@@ -222,11 +222,8 @@
     </div>*/?>
 
                             <div class="hide-mobile">
-                                <a href="https://twitter.com/share?url={{$story->title}}&amp;via=ForumIAS" target="_blank" rel="noopener noreferrer" class="hn-flat-btn tweet-btn d-flex align-items-center">
-                                    <svg viewBox="0 0 24 24">
-
-                                        <path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21-.36.1-.74.15-1.13.15-.27 0-.54-.03-.8-.08.54 1.69 2.11 2.95 4 2.98-1.46 1.16-3.31 1.84-5.33 1.84-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"></path>
-                                    </svg>
+                                <a href="https://api.whatsapp.com/send?text={{$story->title}}" target="_blank" rel="noopener noreferrer" class="hn-flat-btn tweet-btn d-flex align-items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
                                 </a>
                             </div>
 
@@ -267,7 +264,7 @@
                             </div>
                             @if($auth_user)
                             <div class="dropdown">
-                                <button class="hn-flat-btn d-flex align-items-center" data-toggle="dropdown">
+                                <button class="hn-flat-btn d-flex align-items-center show_op_btn" data-postid="{{$story->id}}" data-toggle="dropdown">
                                     <svg viewBox="0 0 24 24">
 
                                         <path fill="none" d="M0 0h24v24H0V0z"></path>
@@ -297,7 +294,7 @@
                                             <span>Delete
     </span></a>
                                         @endif
-                                        <a class="dropdown-item d-flex align-items-center" href="#">
+                                        <a class="dropdown-item d-flex align-items-center" href="#" data-toggle="modal" data-target="#reportModal">
                                             <svg viewBox="0 0 24 24">
 
                                                 <path fill="none" d="M0 0h24v24H0V0z"></path>
@@ -308,7 +305,7 @@
                                                 <path d="M11 7h2v7h-2z"></path>
                                             </svg>
 
-                                            <span>Report
+                                            <span class="cmn_report" data-postid="{{$story->id}}">Report
     </span></a>
                                 </div>
 

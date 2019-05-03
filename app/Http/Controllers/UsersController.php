@@ -84,7 +84,7 @@ class UsersController extends Controller
 
             }else{
                 //echo 'sdfdf';die;
-                if($result['profilePhoto'] == ''){
+                if($result['profilePhoto'] == '' || $result['profilePhoto'] == 'null'){
                     $profile_pic =  'http://vanillicon.com/'.md5($result['email']).'_100.png';
                 }else{
                     $profile_pic =  'https://one.forumias.com/images/tmp/'.$result['profilePhoto'];
@@ -149,14 +149,24 @@ class UsersController extends Controller
         $post_count = $post_list->count();
         //=================================
         //-----------------------------
+        $user_comments = \App\Comment::where('user_id', $id)->get()->pluck('post_id')->toArray();
+        $user_comments =  array_unique($user_comments);
+        //echo '<pre>';print_r($user_comments);die;
         $auth_id = @Auth::user()->id;
-        $stories = \App\Post::where('status', 1)->where('type', 1)->with(['userInfo'=>function($uqr){
+
+        $stories_query = \App\Post::where('status', 1)->where('user_id', $id)->with(['userInfo'=>function($uqr){
 			$uqr->select('id', 'name', 'full_name', 'image', 'about');
 		}, 'commentInfo', 'likeInfo'=>function($qr){
 			$qr->where('like_type', 0);
 			$qr->select('post_id', 'user_ids', 'like_count');
-        }])->orderBy('id', 'DESC')->get();
-        
+        }]);
+        if(count($user_comments) > 1){
+            $stories_query->orWhereIn('id', $user_comments);
+        }else if(count($user_comments) == 1){
+            $stories_query->orWhere('id', @$user_comments[0]);
+        }
+        $stories = $stories_query->orderBy('id', 'DESC')->get();
+       // echo '###<pre>';print_r($stories);die;
 		$like_info = $stories->pluck('likeInfo.user_ids','likeInfo.post_id')->toArray();
 		$like_user_info = array();
 		foreach($like_info as $key=>$one_story){

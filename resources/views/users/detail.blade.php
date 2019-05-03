@@ -11,15 +11,17 @@
             <div class="d-flex flex-row">
                 <div class="feed-component">
 				<?php /*<a href="#" class="profile-status-widget d-flex flex-row align-items-center"><span></span><span>Ask Mark a question</span></a> */?>
-                    <div>
+                    <div class="main_append" data-page="1"  data-acttype="4">
                         <div class="post-card d-flex flex-row justify-content-between filter-bar">
                             <ul class="nav nav-pills">
-                                <li class="nav-item"><a class="nav-link active" href="{{ url()->current() }}">Stories</a></li>
-                                <li class="nav-item"><a class="nav-link " href="#">Questions</a></li>
-								<li class="nav-item"><a class="nav-link" href="#">Polls</a></li>
-                                <li class="nav-item"><a class="nav-link " href="#">News</a></li>
+                                <li class="nav-item"><a class="nav-link active" href="{{ url()->current() }}">My space</a></li>
+                                <li class="nav-item"><a class="nav-link " href="#">Featured</a></li>
+                                <li class="nav-item"><a class="nav-link " href="#">Latest</a></li>
                             </ul>
                         </div>
+						@php
+							$n = 0;
+						@endphp
                          @foreach($stories as $story)
 						<div class="post-card hn-post-card ">
 
@@ -288,7 +290,7 @@
 												</div>
 												@if($auth_user)
 												<div class="dropdown">
-													<button class="hn-flat-btn d-flex align-items-center" data-toggle="dropdown">
+													<button class="hn-flat-btn d-flex align-items-center show_op_btn" data-postid="{{$story->id}}" data-toggle="dropdown">
 														<svg viewBox="0 0 24 24">
 
 															<path fill="none" d="M0 0h24v24H0V0z"></path>
@@ -318,7 +320,7 @@
 																<span>Delete
 						</span></a>
 															@endif
-															<a class="dropdown-item d-flex align-items-center" href="#">
+															<a class="dropdown-item d-flex align-items-center" href="#" data-toggle="modal" data-target="#reportModal">
 																<svg viewBox="0 0 24 24">
 
 																	<path fill="none" d="M0 0h24v24H0V0z"></path>
@@ -329,7 +331,7 @@
 																	<path d="M11 7h2v7h-2z"></path>
 																</svg>
 
-																<span>Report
+																<span class="cmn_report" data-postid="{{$story->id}}">Report
 						</span></a>
 													</div>
 
@@ -342,8 +344,31 @@
 									</div>
 							</div>
 						</div>
+						@php
+							$n++;
+						@endphp
+						
 						@endforeach
+						
+						@if($n == 0)
+							<div class="post-card hn-post-card ">
+
+							<div class="d-flex flex-row">
+
+								<div class="hn-post-card-data d-flex flex-grow-1 flex-wrap flex-row">
+
+									<div class="post-content">
+										There are nothing to show.
+									</div>
+									
+								</div>
+							</div>
+						</div>
+						@endif
                         <span style="font-size: 0px;"></span></div>
+						<div class="text-center feed_loader" style="display:none;">
+<img class="img-responsive" style="height:100px" src="{{ asset('public/images/loader.gif')}}">
+</div>
                 </div>
                 <div class="right-sidebar profile-right-sidebar ">
                     @include('../Elements/users/rigth_side')
@@ -353,4 +378,5 @@
     </div>
 </div>
 @include('../Elements/pop-ups')
+@include('../Elements/posts/report_popup')
 @endsection
