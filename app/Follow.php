@@ -23,5 +23,9 @@ class Follow extends Authenticatable
     {
         return $this->belongsTo('App\Tag', 'tag_id');
     }
+    public function postInfo()
+    {
+        return $this->hasMany('App\Post', 'tag_id', 'tag_id');
+    }
     
 }

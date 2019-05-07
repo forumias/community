@@ -119,7 +119,7 @@
 
 <div class="profile-widget">
 @if(@$auth && @$auth->type != 1)
-<div class="profile-details d-flex align-items-center"><a href="/@dabz" class="profile-pic"><img src="{{@$auth->image}}"></a><a href="#" class="profile-name">{{@$auth->full_name}}</a>
+<div class="profile-details d-flex align-items-center"><a href="{{ URL::to('/detail/'.base64_encode(convert_uuencode($auth->id))) }}" class="profile-pic"><img src="{{@$auth->image}}"></a><a href="{{ URL::to('/detail/'.base64_encode(convert_uuencode($auth->id))) }}" class="profile-name">{{@$auth->full_name}}</a>
 </div>
 @endif
 </div>

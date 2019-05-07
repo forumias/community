@@ -3,9 +3,7 @@
 @section('content')
 
 <div class="container">    
-     <script>
-		var all_tags = <?php echo $all_tags ?>
-	 </script>       
+          
     <div id="signupbox" style=" margin-top:50px" class="mainbox col-md-10 col-md-offset-3 col-sm-8 col-sm-offset-2">
         <div class="panel panel-info">
             <div class="panel-heading">
@@ -46,20 +44,15 @@
 					</div>
 				  </div>
 				   <div class="form-group row">
-					<label for="colFormLabel" class="col-sm-2 col-form-label">Tag</label>
+					<label for="colFormLabelLg" class="col-sm-2 col-form-label">Share in group(Optional)</label>
 					<div class="col-sm-10">
-					  <input type="hidden" name="tag_name" class="original_tag">                  
-						<div class="autocomplete" data-index="0" data-initialized="true">
-						<input class="form-control" id="get_tags" placeholder="Enter a tag" name="temp_tag">
-							<div>
-							<span class="invalid-feedback"> @if ($errors->has('tag_name'))
-								<strong>{{ $errors->first('tag_name') }}</strong> 
-								@endif
-							</span></div>
-						</div> 
-						<div class="my_tags">
-							
-						</div>
+					  <select class="form-control" name="tag_id" > 
+						<option value="" disabled selected>Select group</option>
+						@foreach($following_group as $group)
+						<option value="{{$group->mytags->id}}">{{$group->mytags->title}}</option>
+						@endforeach
+					</select> 
+					
 					</div>
 				  </div>
 				  <div class="form-group row">

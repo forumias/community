@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Auth;
 
 class HomeController extends Controller
 {
@@ -23,7 +24,13 @@ class HomeController extends Controller
 		if($user->type == 1){
 			return redirect('/admin/dashboard');
 		}else{
-			return redirect('/');
+            $user = auth()->user();
+            if($user->onboarding == 1){
+                return redirect('/');
+            }else{
+                return redirect('/onboarding');
+            }
+			
 		}
 		
 	}

@@ -79,10 +79,12 @@
 
 <div>
 
-<div class="header"><a href="#" class="community-image">
+<div class="header"><a href="{{URL::to('/group/'.$tag->tag_slug)}}" class="community-image">
 
 <?php /*<img data-sizes="auto" src="{{ asset('public/images/empty-tag.png')}}" data-src="{{ asset('public/images/empty-tag.png')}}" data-width="120" data-height="120" alt="" class="lazyautosizes lazyloaded" sizes="98px">*/?>
-
+@if($tag->tag_img)
+<img data-sizes="auto" src="{{ asset('public/images/tags/original/'.$tag->tag_img)}}" class="lazyautosizes lazyloaded img-responsive" >
+@else
 	<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 viewBox="0 0 62.583 62.583" style="enable-background:new 0 0 62.583 62.583;" xml:space="preserve">
 		<g id="group-70svg">
@@ -109,10 +111,10 @@
 		</g>
 	</svg>
 
+@endif
 
 
-
-</a><a href="#">{{$tag->title}}</a>
+</a><a href="{{URL::to('/group/'.$tag->tag_slug)}}">{{$tag->title}}</a>
 </div>
 
 <div class="community-details">
@@ -139,7 +141,7 @@ if(strlen($full_description) > 100){
 ?>
 <div class="d-flex flex-row stats-box-wrapper">
 
-<div class="stats-box"><a href="#">
+<div class="stats-box"><a href="{{URL::to('/group/'.$tag->tag_slug)}}">
 
 <span class="big custom_follow_cnt_{{$tag->id}}" data-follow_cnt="{{count($follow_arr)}}">{{count($follow_arr)}}
 </span>
@@ -148,7 +150,7 @@ if(strlen($full_description) > 100){
 </span></a>
 </div>
 
-<div class="stats-box"><a href="#">
+<div class="stats-box"><a href="{{URL::to('/group/'.$tag->tag_slug)}}">
 
 <span class="big">0
 </span>

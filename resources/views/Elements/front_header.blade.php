@@ -264,8 +264,8 @@
 
 <div>
 
-<span>Write Story
-</span><small>Write an article on something you learned today or your experience with a technology</small>
+<span>Write an Article
+</span><small>Write an article on something you learned today or your experience with</small>
 </div></a><a class="dropdown-item d-flex flex-row align-items-center" href="{{Config::get('constants.login_url')}}">
 
 <div><svg viewBox="0 0 500 500"><g transform="translate(1 9)" fill-rule="nonzero" fill="none"><ellipse fill="#FFAB00" cx="242.088364" cy="241.5" rx="241.454545" ry="241.5"></ellipse>
@@ -278,25 +278,8 @@
 <div>
 
 <span>Ask Question
-</span><small>Start a discussion, ask a question, or ask for an opinion on a particular technology</small>
-</div></a><a class="dropdown-item d-flex flex-row align-items-center" href="#">
-
-<div><svg viewBox="0 0 24 24"><g fill="none" fill-rule="evenodd">
-
-<path fill="#CFECF2" d="M17.5503556 6.92777778h5.01111111v15.4611111H17.5503556z"></path>
-
-<path fill="#B4DBB1" d="M9.2192 1.73333333h5.01111111v20.6555556H9.2192z"></path>
-
-<path fill="#E27F6F" d="M1.42777778 10.9h5.01111111v11.4888889H1.42777778z"></path>
-
-<path d="M6.49217778 10.56608889H1.39746667c-.2024 0-.36666667.16426667-.36666667.36666667V22.362c0 .2024.16426667.3666667.36666667.3666667h5.09471111c.2024 0 .36666666-.1642667.36666666-.3666667V10.93275556c0-.2024-.16426666-.36666667-.36666666-.36666667zM6.12551111 21.9953333H1.76413333V11.2994222h4.36137778v10.6959111zM14.2713778 1.27133333H9.17715556c-.2024 0-.36666667.16426667-.36666667.36666667v20.724c0 .2024.16426667.3666667.36666667.3666667h5.09422224c.2024 0 .3666666-.1642667.3666666-.3666667V1.638c0-.2024-.1628-.36666667-.3666666-.36666667zm-.3666667 20.72399997H9.54382222V2.00466667h4.36088888V21.9953333zM22.6030222 6.36653333H17.5088c-.2024 0-.3666667.16426667-.3666667.36666667V22.362c0 .2024.1642667.3666667.3666667.3666667h5.0942222c.2024 0 .3666667-.1642667.3666667-.3666667V6.7332c0-.2024-.1642667-.36666667-.3666667-.36666667zm-.3666666 15.62879997h-4.3608889V7.09986667h4.3608889V21.9953333z" fill="#3F3F3F" fill-rule="nonzero"></path></g></svg>
-</div>
-
-<div>
-
-<span>Start Poll
-</span><small>Confused with something? Ask the community for their opinion</small>
-</div></a><a class="dropdown-item d-flex flex-row align-items-center" href="#">
+</span><small>Start a discussion, ask a question, or ask for an opinion</small>
+</div></a><a class="dropdown-item d-flex flex-row align-items-center" href="{{Config::get('constants.login_url')}}">
 
 <div><svg viewBox="0 0 24 24"><g fill="none" fill-rule="evenodd">
 
@@ -313,8 +296,8 @@
 
 <div>
 
-<span>Submit News
-</span><small>Found an interesting article on the web? Share it with the community.</small>
+<span>Share Gyan
+</span><small>Write an Article and share your knowledge or something you have learned recently.</small>
 </div></a>
 </div>
 </div><a href="{{Config::get('constants.login_url')}}" class="btn get-started d-flex align-items-center"><svg viewBox="0 0 24 24">

@@ -12,7 +12,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}" />
 <title>ForumIAS Community
 </title>
-
+<link rel="icon" type="image/png" href="{{ asset('public/images/favicon.png')}}">
 
 <link rel="stylesheet" href="{{ asset('public/css/frontend/bootstrap.min.css')}}">
 
@@ -44,7 +44,7 @@
 </script>
 
 @endif
-@if (Request::segment(1) == 'tags')
+@if (Request::segment(1) == 'groups')
 	<script src="{{ asset('public/js/custom/tags.js')}}" ></script>
 @endif
 @if (Request::segment(1) == 'users')

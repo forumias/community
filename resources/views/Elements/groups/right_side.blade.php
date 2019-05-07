@@ -5,10 +5,10 @@
         <div class="d-flex flex-row flex-wrap">
             <div class="stats-box">
                 <p>Followers</p>
-                <h4>19.2K</h4></div>
+                <h4 class="follow_cnt" data-followcnt="{{$total_follow}}">{{number_format($total_follow)}}</h4></div>
             <div class="stats-box">
                 <p>Total Posts</p>
-                <h4>4.3K</h4></div>
+                <h4>{{ number_format($total_posts)}}</h4></div>
         </div>
     </div>
 </div>

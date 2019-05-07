@@ -329,43 +329,20 @@ class PostsController extends Controller
 			}
 	public function ask_qus(Request $request)
 	{
+		$auth_id = @Auth::user()->id;
+		$following_group = Follow::where('type', 1)->whereRaw("find_in_set('".$auth_id."',follow_by)")->with(['mytags'=>function($qr){
+			$qr->select('id', 'title');
+		}])->get();
+		//echo '<pre>';print_r($following_group);die;
 		$categories = \DB::table("categories")->select("categories.*")->orderBy('name', 'asc')->get();
-		$tags = \DB::table("tags")->select("tags.*")->where('status', 1)->orderBy('title', 'asc')->get();
-		$all_tags = array();
-		foreach($tags as $tag){
-				$temp_arr['id'] = $tag->id;
-				$temp_arr['label'] = $tag->title;
-				$temp_arr['value'] = $tag->title;
-			array_push($all_tags, $temp_arr);
-		}
-		$all_tags = json_encode($all_tags);
+		
 		if ($request->isMethod('post')) {
 			request()->validate([
 				'title' => 'required',
 				'description' => 'required',
 				'category_id' => 'required',
-				'tag_name' => 'required',
 			]);
-			if(!empty($request->tags)){
-				$tag_str = implode(',',$request->tags);
-			}else{
-				$tag_str = '';
-			}
 			
-			if($request->temp_tag != ''){
-				$custom_tag = Tag::create([
-					'title' => $request->temp_tag,
-					'tag_slug' => str_slug($request->temp_tag),
-                    'description' => '',
-                    'status' => 1,
-                    'created_by' => 1,
-				 ]);
-				 if($tag_str != ''){
-					$tag_str = $tag_str.', '.$custom_tag->id;
-				 }else{
-					$tag_str = $custom_tag->id;
-				 }
-			}
 			$category_id = implode(',',$request->category_id);
 			//echo '<pre>';print_r($request->all());die;
 			$post_slug = str_slug($request->title).'-'.time();
@@ -373,29 +350,21 @@ class PostsController extends Controller
 			$request->offsetSet('slug', $post_slug);
 			$request->offsetSet('user_id', $user->id);
 			$request->offsetSet('status', 1);
-			$request->offsetSet('tag_id', $tag_str);
 			$request->offsetSet('category_id', $category_id);
 			$user = Post::create($request->all());
 			return Redirect::to('/')->with('success','Question was created successfully.');
 			
-		}else{
-
 		}
 		
-		return view('posts.askquestion',compact('categories', 'all_tags'));
+		return view('posts.askquestion',compact('categories', 'following_group'));
 	}
 	public function user_story(Request $request)
 	{
-		$categories = \DB::table("categories")->select("categories.*")->orderBy('name', 'asc')->get();
-		$tags = \DB::table("tags")->select("tags.*")->where('status', 1)->orderBy('title', 'asc')->get();
-		$all_tags = array();
-		foreach($tags as $tag){
-				$temp_arr['id'] = $tag->id;
-				$temp_arr['label'] = $tag->title;
-				$temp_arr['value'] = $tag->title;
-			array_push($all_tags, $temp_arr);
-		}
-		$all_tags = json_encode($all_tags);
+		$auth_id = @Auth::user()->id;
+		$following_group = Follow::where('type', 1)->whereRaw("find_in_set('".$auth_id."',follow_by)")->with(['mytags'=>function($qr){
+			$qr->select('id', 'title');
+		}])->get();
+		
 		if ($request->isMethod('post')) {
 			/*if($request->tag_name == ''){
 				if($request->tags != ''){
@@ -406,35 +375,16 @@ class PostsController extends Controller
 			request()->validate([
 				'title' => 'required',
 				'description' => 'required',
-				'tag_name' => 'required',
 				'file_upload'=> 'required'
 			]);
-			if(!empty($request->tags)){
-				$tag_str = implode(',',$request->tags);
-			}else{
-				$tag_str = '';
-			}
 			
-			if($request->temp_tag != ''){
-				$custom_tag = Tag::create([
-					'title' => $request->temp_tag,
-					'tag_slug' => str_slug($request->temp_tag),
-                    'description' => '',
-                    'status' => 1,
-                    'created_by' => 1,
-				 ]);
-				 if($tag_str != ''){
-					$tag_str = $tag_str.', '.$custom_tag->id;
-				 }else{
-					$tag_str = $custom_tag->id;
-				 }
-			}
 			//echo '<pre>';print_r($request->all());die;
+			$post_slug = str_slug($request->title).'-'.time();
 			$user = auth()->user();	
+			$request->offsetSet('slug', $post_slug);
 			$request->offsetSet('user_id', $user->id);
 			$request->offsetSet('status', 1);
 			$request->offsetSet('type', 1);
-			$request->offsetSet('tag_id', $tag_str);
 
 			if(@$request->file_upload != ''){
 				$ext_arr = array('JPEG','jpeg','PNG','png','GIF', 'gif', 'JPG', 'jpg');
@@ -467,7 +417,7 @@ class PostsController extends Controller
 
 		}
 		
-		return view('posts.story',compact('categories', 'all_tags'));
+		return view('posts.story',compact('following_group'));
 	}
 	
 	public static function quickRandom($length = 16)
@@ -639,47 +589,24 @@ class PostsController extends Controller
 
 	public function create_news(Request $request)
 	{
-		$tags = \DB::table("tags")->select("tags.*")->where('status', 1)->orderBy('title', 'asc')->get();
-		$all_tags = array();
-		foreach($tags as $tag){
-				$temp_arr['id'] = $tag->id;
-				$temp_arr['label'] = $tag->title;
-				$temp_arr['value'] = $tag->title;
-			array_push($all_tags, $temp_arr);
-		}
-		$all_tags = json_encode($all_tags);
+		$auth_id = @Auth::user()->id;
+		$following_group = Follow::where('type', 1)->whereRaw("find_in_set('".$auth_id."',follow_by)")->with(['mytags'=>function($qr){
+			$qr->select('id', 'title');
+		}])->get();
+		
 		if ($request->isMethod('post')) {
 			request()->validate([
 				'title' => 'required',
 				'description' => 'required',
-				'tag_name' => 'required'
 			]);
-			if(!empty($request->tags)){
-				$tag_str = implode(',',$request->tags);
-			}else{
-				$tag_str = '';
-			}
 			
-			if($request->temp_tag != ''){
-				$custom_tag = Tag::create([
-					'title' => $request->temp_tag,
-					'tag_slug' => str_slug($request->temp_tag),
-                    'description' => '',
-                    'status' => 1,
-                    'created_by' => 1,
-				 ]);
-				 if($tag_str != ''){
-					$tag_str = $tag_str.', '.$custom_tag->id;
-				 }else{
-					$tag_str = $custom_tag->id;
-				 }
-			}
 			//echo '<pre>';print_r($request->all());die;
+			$post_slug = str_slug($request->title).'-'.time();
 			$user = auth()->user();	
+			$request->offsetSet('slug', $post_slug);
 			$request->offsetSet('user_id', $user->id);
 			$request->offsetSet('status', 1);
 			$request->offsetSet('type', 3);
-			$request->offsetSet('tag_id', $tag_str);
 
 			$result = Post::create($request->all());
 		
@@ -689,7 +616,7 @@ class PostsController extends Controller
 
 		}
 		
-		return view('posts.create_news',compact('all_tags'));
+		return view('posts.create_news',compact('following_group'));
 	}
 	public function delete_action(Request $request){
 			switch (@$request->cmnType) {
@@ -809,11 +736,14 @@ class PostsController extends Controller
 					$stories_query->orWhere('user_id', @$follow_user[0]);
 				}
 
-				if(count($follow_tag) > 0){
-					foreach($follow_tag as $one_tag){ //finding the related post with tag follow
+				if(count($follow_tag) > 1){
+					$stories_query = $stories_query->orWhereIn('tag_id', $follow_tag);
+					/*foreach($follow_tag as $one_tag){ //finding the related post with tag follow
 						//echo $one_tag;die;
 						$stories_query = $stories_query->orWhereRaw("find_in_set('".$one_tag."',tag_id)");
-					}
+					}*/
+				}elseif(count($follow_tag) == 1){
+					$stories_query = $stories_query->orWhere('tag_id', @$follow_tag[0]);
 				}
 				$stories = $stories_query->orderBy('id', 'DESC')->offset($offset)->limit($limit)->get();
 			}else{
@@ -859,11 +789,7 @@ class PostsController extends Controller
 		//$stories->pluck('likeInfo.user_ids','likeInfo.post_id')->toArray()
 		//echo '<pre>';print_r($like_user_info);die;
 		$auth_id = @Auth::user()->id;
-		$tag_followed = Follow::where('type', 1)->whereRaw("find_in_set('".$auth_id."',follow_by)")->with(['mytags'])->get();
-		$users_tofollow = User::where('type', 2)->where('status', 1)->where('id', '!=', $auth_id)->with(['followInfo'=>function($subQuery) use ($auth_id) {	
-			$subQuery->whereRaw("find_in_set('".$auth_id."',follow_by)");
-			$subQuery->select('id', 'user_id');
-		}])->limit(5)->get();
+		
 
 		$tag_idz  = $stories->pluck('tag_id');
 		$tag_id_arr = array();
@@ -880,14 +806,9 @@ class PostsController extends Controller
 		}elseif(count($tag_id_arr) == 1){
 			$tags = \DB::table("tags")->where('id', $tag_id_arr[0])->pluck('title', 'id')->toArray();
 		}
-		$hot_discussions = Comment::select(DB::raw("COUNT(*) as count_row"), 'post_id')
-						->with(['getPost'])
-						->orderBy("count_row", 'DESC')
-						->groupBy(DB::raw("post_id"))
-						->limit(5)
-						->get();
+		
 		//echo '<pre>';print_r($hot_discussions);die;
-		return view('Elements.posts.ajax_element', compact('stories', 'tags', 'tag_followed', 'users_tofollow', 'hot_discussions', 'like_user_info'));
+		return view('Elements.posts.ajax_element', compact('stories', 'tags', 'like_user_info'));
 	}
 
 	public function report_post(Request $request){
@@ -932,6 +853,76 @@ class PostsController extends Controller
 			return Redirect::back()->with('error','We are facing some error. Please try again later');
 		}
 		
+	}
+
+	public function detail_post(Request $request){
+		$flag = $request->flag;
+		$page_no = $request->page;
+		$acttype = $request->acttype;
+		$limit = 2;
+		$offset = $page_no * $limit;
+		$page_id = $request->ulksjjdfy;
+		
+		if($acttype == 4){ //user detail page
+			$user_comments = \App\Comment::where('user_id', $page_id)->get()->pluck('post_id')->toArray();
+        	$user_comments =  array_unique($user_comments);
+
+			$stories_query = Post::where('status', 1)->where('user_id', $page_id)->with(['userInfo'=>function($uqr){
+				$uqr->select('id', 'name', 'full_name', 'image', 'about');
+			}, 'commentInfo', 'likeInfo'=>function($qr){
+				$qr->where('like_type', 0);
+				$qr->select('post_id', 'user_ids', 'like_count');
+			}]);
+
+			if(count($user_comments) > 1){
+				$stories_query->orWhereIn('id', $user_comments);
+			}else if(count($user_comments) == 1){
+				$stories_query->orWhere('id', @$user_comments[0]);
+			}
+			$stories = $stories_query->orderBy('id', 'DESC')->get();
+		}elseif($acttype == 5){ //group detail
+			$tag_info = Tag::where()->first(); 
+			$stories = Post::where('status', 1)->where('featured', 1)->with(['userInfo'=>function($uqr){
+				$uqr->select('id', 'name', 'full_name', 'image', 'about');
+			}, 'commentInfo', 'likeInfo'=>function($qr){
+				$qr->where('like_type', 0);
+				$qr->select('post_id', 'user_ids', 'like_count');
+			}])->orderBy('id', 'DESC')->offset($offset)->limit($limit)->get();
+		}
+		$like_info = $stories->pluck('likeInfo.user_ids','likeInfo.post_id')->toArray();
+		$like_user_info = array();
+		foreach($like_info as $key=>$one_story){
+			$one_story_arr = explode(',',$one_story);
+			if(count($one_story_arr) > 1){
+				$like_users = User::whereIn('id', $one_story_arr)->select('full_name','image')->limit(8)->get();
+				$like_user_info[$key]['name'] = $like_users->pluck('full_name')->toArray();
+				$like_user_info[$key]['img'] = $like_users->pluck('image')->toArray();
+				//echo '<pre>';print_r($like_user_info);die;
+			}elseif(count($one_story_arr) == 1){
+				$like_users = User::where('id', @$one_story_arr[0])->select('full_name','image')->get();
+				$like_user_info[$key]['name'] = $like_users->pluck('full_name')->toArray();
+				$like_user_info[$key]['img'] = $like_users->pluck('image')->toArray();
+			}
+		}
+		
+		$tag_idz  = $stories->pluck('tag_id');
+		$tag_id_arr = array();
+		foreach($tag_idz as $oneTagId){
+			if($oneTagId != ''){
+				$exploaded = explode(',', $oneTagId);
+				$tag_id_arr = array_merge($tag_id_arr, $exploaded);
+			}
+		}
+		$tag_id_arr = array_unique($tag_id_arr);
+		$tags = array();
+		if(count($tag_id_arr) > 1){
+			$tags = \DB::table("tags")->whereIn('id', $tag_id_arr)->pluck('title', 'id')->toArray();
+		}elseif(count($tag_id_arr) == 1){
+			$tags = \DB::table("tags")->where('id', $tag_id_arr[0])->pluck('title', 'id')->toArray();
+		}
+		
+		//echo '<pre>';print_r($hot_discussions);die;
+		return view('Elements.posts.ajax_element', compact('stories', 'tags', 'like_user_info'));
 	}
    
 }

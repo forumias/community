@@ -90,23 +90,24 @@ class GroupsController extends Controller
 				}
 				
 				if(@$request->image != ''){
-				$ext_arr = array('JPEG','jpeg','PNG','png','GIF', 'gif', 'JPG', 'jpg');
-				$file = $request->file('image');
-				
-				if (in_array($file->getClientOriginalExtension(), $ext_arr)){
+					$ext_arr = array('JPEG','jpeg','PNG','png','GIF', 'gif', 'JPG', 'jpg');
+					$file = $request->file('image');
+					
+					if (in_array($file->getClientOriginalExtension(), $ext_arr)){
 
-				  $thumbnail_path = public_path('images/tags/thumb/');
-				  $original_path = public_path('images/tags/original/');
-				  $file_name = 'tags_'.'_'. $this->quickRandom(16) . '.' . $file->getClientOriginalExtension();
-					Image::make($file)
-						  ->save($original_path . $file_name)
-						  ->resize(120, 120)
-						  ->save($thumbnail_path . $file_name);
-						   $request->offsetSet('tag_img', $file_name);
+					$thumbnail_path = public_path('images/tags/thumb/');
+					$original_path = public_path('images/tags/original/');
+					$file_name = 'tags_'.'_'. $this->quickRandom(16) . '.' . $file->getClientOriginalExtension();
+						Image::make($file)
+							->save($original_path . $file_name)
+							->resize(120, 120)
+							->save($thumbnail_path . $file_name);
+							$request->offsetSet('tag_img', $file_name);
+					}
+					$request->offsetSet('tag_slug', str_slug($request->title));
+					
 				}
-				$request->offsetSet('tag_slug', str_slug($request->title));
 				$tag->update($request->all());
-			}
 				
 				return redirect()->route('groups.index')
 								->with('success','Tag updated successfully.');
@@ -124,26 +125,27 @@ class GroupsController extends Controller
 				]);	
 				
 				if(@$request->image != ''){
-				$ext_arr = array('JPEG','jpeg','PNG','png','GIF', 'gif', 'JPG', 'jpg');
-				$file = $request->file('image');
-				//echo $file->getClientOriginalExtension();die;
-				if (in_array($file->getClientOriginalExtension(), $ext_arr)){
+					$ext_arr = array('JPEG','jpeg','PNG','png','GIF', 'gif', 'JPG', 'jpg');
+					$file = $request->file('image');
+					//echo $file->getClientOriginalExtension();die;
+					if (in_array($file->getClientOriginalExtension(), $ext_arr)){
 
-				  $thumbnail_path = public_path('images/tags/thumb/');
-				  $original_path = public_path('images/tags/original/');
-				  $file_name = 'tags_'.'_'. $this->quickRandom(16) . '.' . $file->getClientOriginalExtension();
-					Image::make($file)
-						  ->save($original_path . $file_name)
-						  ->resize(120, 120)
-						  ->save($thumbnail_path . $file_name);
+					$thumbnail_path = public_path('images/tags/thumb/');
+					$original_path = public_path('images/tags/original/');
+					$file_name = 'tags_'.'_'. $this->quickRandom(16) . '.' . $file->getClientOriginalExtension();
+						Image::make($file)
+							->save($original_path . $file_name)
+							->resize(120, 120)
+							->save($thumbnail_path . $file_name);
+						
+							$request->offsetSet('tag_img', $file_name);
+						
+					//echo '<pre>';print_r($request->file('image'));die;
+					}
+					$request->offsetSet('tag_slug', str_slug($request->title));
 					
-						   $request->offsetSet('tag_img', $file_name);
-					
-				//echo '<pre>';print_r($request->file('image'));die;
 				}
-				$request->offsetSet('tag_slug', str_slug($request->title));
 				$tag = Tag::create($request->all());
-			}
 
 				return redirect()->route('groups.index')
 								->with('success','Tag has been created successfully.');
@@ -157,7 +159,7 @@ class GroupsController extends Controller
 		}
 	public function groups(Request $request)
 	{
-		$tags_listing = Tag::where('status', 1)->with(['followInfo'])->orderBy('title', 'ASC')->get();
+		$tags_listing = Tag::where('status', 1)->where('created_by', 0)->with(['followInfo'])->orderBy('title', 'ASC')->get();
 
 		//echo '<pre>';print_r($tags_listing);die;
 		return view('groups.groups', compact('tags_listing'));
@@ -172,47 +174,67 @@ class GroupsController extends Controller
    
 	public function dashboard(Request $request, $tag=null){
 		$tag_info = Tag::where('status', 1)->where('tag_slug', trim($tag))->first();
+		$auth_id = @Auth::user()->id;
 		//echo '<pre>';print_r($tag_info);die;
-		$stories = Post::where('status', 1)->where('type', 1)->with(['userInfo'=>function($uqr){
-			$uqr->select('id', 'name', 'full_name', 'image', 'about');
-		}, 'commentInfo', 'likeInfo'=>function($qr){
-			$qr->where('like_type', 0);
-			$qr->select('post_id', 'user_ids', 'like_count');
-		}])->orderBy('id', 'DESC')->limit(2)->get();
-		
-		$like_info = $stories->pluck('likeInfo.user_ids','likeInfo.post_id')->toArray();
-		$like_user_info = array();
-		foreach($like_info as $key=>$one_story){
-			$one_story_arr = explode(',',$one_story);
-			if(count($one_story_arr) > 1){
-				$like_users = \App\User::whereIn('id', $one_story_arr)->select('full_name','image')->limit(8)->get();
-				$like_user_info[$key]['name'] = $like_users->pluck('full_name')->toArray();
-				$like_user_info[$key]['img'] = $like_users->pluck('image')->toArray();
-				//echo '<pre>';print_r($like_user_info);die;
-			}elseif(count($one_story_arr) == 1){
-				$like_users = \App\User::where('id', @$one_story_arr[0])->select('full_name','image')->get();
-				$like_user_info[$key]['name'] = $like_users->pluck('full_name')->toArray();
-				$like_user_info[$key]['img'] = $like_users->pluck('image')->toArray();
+		if($tag_info){
+			$stories = Post::where('status', 1)->where('tag_id', $tag_info->id)->with(['userInfo'=>function($uqr){
+				$uqr->select('id', 'name', 'full_name', 'image', 'about');
+			}, 'commentInfo', 'likeInfo'=>function($qr){
+				$qr->where('like_type', 0);
+				$qr->select('post_id', 'user_ids', 'like_count');
+			}])->orderBy('id', 'DESC')->limit(2)->get();
+			
+			$like_info = $stories->pluck('likeInfo.user_ids','likeInfo.post_id')->toArray();
+			$like_user_info = array();
+			foreach($like_info as $key=>$one_story){
+				$one_story_arr = explode(',',$one_story);
+				if(count($one_story_arr) > 1){
+					$like_users = \App\User::whereIn('id', $one_story_arr)->select('full_name','image')->limit(8)->get();
+					$like_user_info[$key]['name'] = $like_users->pluck('full_name')->toArray();
+					$like_user_info[$key]['img'] = $like_users->pluck('image')->toArray();
+					//echo '<pre>';print_r($like_user_info);die;
+				}elseif(count($one_story_arr) == 1){
+					$like_users = \App\User::where('id', @$one_story_arr[0])->select('full_name','image')->get();
+					$like_user_info[$key]['name'] = $like_users->pluck('full_name')->toArray();
+					$like_user_info[$key]['img'] = $like_users->pluck('image')->toArray();
+				}
 			}
-		}
-		
-		$tag_idz  = $stories->pluck('tag_id');
-		$tag_id_arr = array();
-		foreach($tag_idz as $oneTagId){
-			if($oneTagId != ''){
-				$exploaded = explode(',', $oneTagId);
-				$tag_id_arr = array_merge($tag_id_arr, $exploaded);
+			
+			$tag_idz  = $stories->pluck('tag_id');
+			$tag_id_arr = array();
+			foreach($tag_idz as $oneTagId){
+				if($oneTagId != ''){
+					$exploaded = explode(',', $oneTagId);
+					$tag_id_arr = array_merge($tag_id_arr, $exploaded);
+				}
 			}
-		}
-		$tag_id_arr = array_unique($tag_id_arr);
-		$tags = array();
-		if(count($tag_id_arr) > 1){
-			$tags = \DB::table("tags")->whereIn('id', $tag_id_arr)->pluck('title', 'id')->toArray();
-		}elseif(count($tag_id_arr) == 1){
-			$tags = \DB::table("tags")->where('id', $tag_id_arr[0])->pluck('title', 'id')->toArray();
-		}
-		
-		//echo '<pre>';print_r($hot_discussions);die;
-		return view('groups.dashboard', compact('stories', 'tags', 'like_user_info', 'tag_info'));	
+			$tag_id_arr = array_unique($tag_id_arr);
+			$tags = array();
+			if(count($tag_id_arr) > 1){
+				$tags = \DB::table("tags")->whereIn('id', $tag_id_arr)->pluck('title', 'id')->toArray();
+			}elseif(count($tag_id_arr) == 1){
+				$tags = \DB::table("tags")->where('id', $tag_id_arr[0])->pluck('title', 'id')->toArray();
+			}
+
+			$following_query = \App\Follow::where('type', 1)->where('tag_id', $tag_info->id);
+			$total_follow_str = $following_query->first();
+			$following = $following_query->whereRaw("find_in_set('".$auth_id."',follow_by)")->count();
+			
+			$total_posts = Post::where('tag_id', $tag_info->id)->count();
+			//echo '%%%%%%%: <pre>';print_r($total_posts);die;
+			if($total_follow_str){
+				//echo '<pre>';print_r($total_follow_str);die;
+				$total_follow_users_id = explode(',', $total_follow_str->follow_by);
+				$total_follow = count($total_follow_users_id);
+			}else{
+				$total_follow = 0;
+				
+			}
+			//echo '<pre>';print_r($total_follow);die;
+			return view('groups.dashboard', compact('stories', 'tags', 'like_user_info', 'tag_info', 'following', 'total_follow', 'total_posts'));
+		}else{
+			return redirect()->to('/')
+							->with('error','Some error has occured');
+		}	
 	}
 }

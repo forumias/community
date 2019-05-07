@@ -62,14 +62,14 @@ class UsersController extends Controller
             $result = $result['data'];
             $user_info = User::where('auth_id',$request->com_id )->first();
            
-       // echo '####<pre>';print_r($result);die;
+        //echo '####<pre>';print_r($result);die;
             $auth_token = md5($_SERVER['HTTP_USER_AGENT']);
            // echo $auth_token;die;
 
             if($user_info){
                 $profile_pic = $user_info->image;
-                if($result['profilePhoto'] != ''){
-                    $profile_pic = 'https://one.forumias.com/images/tmp/'.$result['profilePhoto'];
+                if(@$result['profilePhoto'] != ''){
+                    $profile_pic = 'https://one.forumias.com/images/tmp/'.@$result['profilePhoto'];
                 }
                 $user_info->update([
                     'name' => $result['name'],
@@ -78,16 +78,16 @@ class UsersController extends Controller
                     'full_name' => $result['fullName'],
                     'email' => $result['email'],
                     'mobile_number' => $result['mobile'],
-                    'roll_number' => $result['roll_number'],
+                    'roll_number' => @$result['roll_number'],
                 ]);
                // echo '####<pre>';print_r($user_info);die;
 
             }else{
                 //echo 'sdfdf';die;
-                if($result['profilePhoto'] == '' || $result['profilePhoto'] == 'null'){
+                if(@$result['profilePhoto'] == '' || @$result['profilePhoto'] == 'null'){
                     $profile_pic =  'http://vanillicon.com/'.md5($result['email']).'_100.png';
                 }else{
-                    $profile_pic =  'https://one.forumias.com/images/tmp/'.$result['profilePhoto'];
+                    $profile_pic =  'https://one.forumias.com/images/tmp/'.@$result['profilePhoto'];
                 }
                 $user_info = User::create([
                     'auth_id' => $request->com_id,
@@ -99,7 +99,7 @@ class UsersController extends Controller
                     'password' => 'a123456',
                     'email' => $result['email'],
                     'mobile_number' => $result['mobile'],
-                    'roll_number' => $result['roll_number'],
+                    'roll_number' => @$result['roll_number'],
                  ]);
                 // echo '@@@@@@@@@@@@@@@<pre>';print_r($user);die;
             }
@@ -212,6 +212,23 @@ class UsersController extends Controller
        
         	
        
+    }
+    public function onboarding(Request $request){
+        $auth_id = @Auth::user()->id;
+        $user_info = User::where('id', $auth_id)->where('onboarding', 0)->first();
+        if($user_info){
+            $group_listing = \App\Tag::where('status', 1)->where('created_by', 0)->with(['followInfo'])->orderBy('title', 'ASC')->get();
+        }else{
+            return redirect()->to('/');
+        }
+        //echo '$$$$$$$$$$$$$$: <pre>';print_r($user_info);die;
+        return view('users.onboard', compact('group_listing'));	
+    }
+    public function onboarding_status(Request $request){
+        $auth_id = @Auth::user()->id;
+        $user_info = User::where('id', $auth_id)->first();
+        $user_info->update(['onboarding'=>1]);
+        return redirect()->to('/')->with('success','Your profile is completed successfully.');
     }
 
 }

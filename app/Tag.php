@@ -16,7 +16,7 @@ class Tag extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'id', 'title', 'image','description','status','created_by',
+        'id', 'title', 'tag_slug', 'tag_img','description','status','created_by',
     ];
 
     public function followInfo()

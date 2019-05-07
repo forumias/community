@@ -33,6 +33,7 @@ Route::get('/delete_action', 'PostsController@delete_action')->name('delete_acti
 Route::post('/like_unlike', 'PostsController@like_unlike')->name('like_unlike');
 Route::post('/user_likes', 'PostsController@user_likes')->name('user_likes');
 Route::get('/get_post', 'PostsController@get_post')->name('get_post');
+Route::get('/detail_post', 'PostsController@detail_post')->name('detail_post');
 Route::post('/report_post', 'PostsController@report_post')->name('report_post');
 // UsersController
 Route::get('/auth_user', 'UsersController@index')->name('auth_user');
@@ -40,6 +41,8 @@ Route::get('/checklogout', 'UsersController@checklogout')->name('checklogout');
 Route::get('/check_log', 'UsersController@check_log')->name('check_log');
 Route::get('/users', 'UsersController@user_listing')->name('users')->middleware('frontuser');
 Route::get('/detail/{id}', 'UsersController@detail')->name('detail')->middleware('frontuser');
+Route::get('/onboarding', 'UsersController@onboarding')->name('onboarding')->middleware('frontuser');
+Route::get('/onboarding_status', 'UsersController@onboarding_status')->name('onboarding_status')->middleware('frontuser');
 //-----------------------
 Route::get('/home/verify', 'HomeController@verify')->name('verify');
 Route::get('/groups', 'GroupsController@groups')->name('groups')->middleware('frontuser');
@@ -47,7 +50,7 @@ Route::post('/follow_unfollow_tag', 'FollowsController@follow_unfollow_tag')->na
 Route::get('post/detail/{id}', 'PostsController@detail');
 Route::get('/test', 'Auth\LoginController@test')->name('test');
 //TagsController-----------------------------
-Route::get('/tag/{slag}', 'GroupsController@dashboard')->name('tag_dashboard')->middleware('frontuser');
+Route::get('/group/{slag}', 'GroupsController@dashboard')->name('tag_dashboard')->middleware('frontuser');
 
 
 //Auth::routes();
@@ -83,7 +86,8 @@ Route::prefix('admin')->group(function () {
     Route::get('dashboard', 'AdminController@dashboard')->name('dashboard')->middleware('auth', 'adminuser');
     //Route::get('acheck', 'AdminController@acheck')->name('acheck');
     Route::resource('groups','GroupsController')->middleware('auth','adminuser');
-    Route::resource('posts','PostsController')->middleware('auth','adminuser');
+    Route::resource('posts','AdminpostController')->middleware('auth','adminuser');
+    Route::get('setFeatured','AdminpostController@setFeatured')->name('setFeatured')->middleware('auth','adminuser');
     Route::resource('categories','CategoryController')->middleware('auth','adminuser');
 
 

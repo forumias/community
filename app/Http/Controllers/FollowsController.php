@@ -33,6 +33,7 @@ class FollowsController extends Controller
     
     public function follow_unfollow_tag(Request $request) {
         $auth_id = @Auth::user()->id;
+        //echo '<pre>';print_r($request->all());die;
         if(@$auth_id != ''){
             if($request->act_type == 1){
                 $follow_info = Follow::where('tag_id',$request->tg_id )->first();
